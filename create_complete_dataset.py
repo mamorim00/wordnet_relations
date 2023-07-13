@@ -56,6 +56,19 @@ for iteration in tqdm.tqdm(range(num_iterations), desc='Progress'):
     }
     synonyms_df = pd.DataFrame(synonyms_data)
     dataframes.append(synonyms_df)
+    
+
+    # Obter todos os holônimos da synset
+    holonyms = synset.part_holonyms() + synset.substance_holonyms() + synset.member_holonyms()
+    holonyms_data = {
+        'Definição Synset': [synset.definition() for _ in range(len(holonyms))],
+        'ID Synset': [synset.name() for _ in range(len(holonyms))],
+        'Definição Relacionada': [h.definition() for h in holonyms],
+        'ID Relacionada': [h.name() for h in holonyms],
+        'Relação': ['Holonyms' for _ in range(len(holonyms))]
+    }
+    holonyms_df = pd.DataFrame(holonyms_data)
+    dataframes.append(holonyms_df)
 
 # Concatenar todos os dataframes em um único dataframe
 combined_df = pd.concat(dataframes)

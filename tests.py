@@ -55,7 +55,27 @@ def check_synonyms():
     else:
         print("All synsets with synonyms are included in the CSV.")
 
+def check_holonyms():
+    csv_file = 'all_synsets.csv'
+    combined_df = pd.read_csv(csv_file)
+
+    # Get all unique synset names
+    unique_synset = set(combined_df['ID Synset'])
+
+    # Check if all synsets with holonyms are included
+    all_holonym_synsets = set(wn.synset(sys.name()).name() for sys in wn.all_synsets() if sys.part_holonyms() or sys.substance_holonyms() or sys.member_holonyms())
+    missing_synsets = all_holonym_synsets - unique_synset
+
+    if missing_synsets:
+        print("The following synsets are missing from the CSV:")
+        for sys in missing_synsets:
+            print(sys)
+    else:
+        print("All synsets with holonyms are included in the CSV.")
+
+
 if __name__ == '__main__':
     check_hyponyms()
     check_hypernyms()
     check_synonyms()
+    check_holonyms()
